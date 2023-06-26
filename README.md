@@ -1,0 +1,2 @@
+@aurorajs.dev/typesense
+=======================

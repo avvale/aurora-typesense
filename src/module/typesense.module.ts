@@ -1,15 +1,9 @@
-import { DynamicModule } from '@nestjs/common';
-import { Provider } from '@nestjs/common';
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
-
-import { TypesenseModuleAsyncOptions } from './typesense-module.interface';
-import { TypesenseModuleOptions } from './typesense-module.interface';
-import { TypesenseOptionsFactory } from './typesense-module.interface';
+import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
+import { TypesenseModuleAsyncOptions, TypesenseOptionsFactory } from './typesense-module.interface';
 import { TYPESENSE_MODULE_OPTIONS } from './typesense.constants';
-import { createTypesenseExportsProvider } from './typesense.providers';
-import { createTypesenseProvider } from './typesense.providers';
-import { createTypesenseOptionsProvider } from './typesense.providers';
+import { createTypesenseExportsProvider, createTypesenseProvider } from './typesense.providers';
 
 @Module({
     imports: [
@@ -18,9 +12,8 @@ import { createTypesenseOptionsProvider } from './typesense.providers';
 })
 export class TypesenseModule
 {
-    static forRoot(options: TypesenseModuleOptions = {}): DynamicModule
+    static forRoot(options: ConfigurationOptions): DynamicModule
     {
-        const optionsProviders = createTypesenseOptionsProvider(options);
         const exportsProviders = createTypesenseExportsProvider();
         const providers = createTypesenseProvider();
 
@@ -28,7 +21,12 @@ export class TypesenseModule
             global   : true,
             module   : TypesenseModule,
             providers: [
-                ...optionsProviders,
+                // register options with TYPESENSE_MODULE_OPTIONS token
+                // to be available for inject
+                {
+                    provide : TYPESENSE_MODULE_OPTIONS,
+                    useValue: options,
+                },
                 ...providers,
                 ...exportsProviders,
             ],
@@ -83,9 +81,8 @@ export class TypesenseModule
 
         return {
             provide   : TYPESENSE_MODULE_OPTIONS,
-            useFactory: (optionsFactory: TypesenseOptionsFactory) =>
-                optionsFactory.createTypesenseOptions(),
-            inject: [options.useExisting! || options.useClass!],
+            useFactory: (optionsFactory: TypesenseOptionsFactory) => optionsFactory.createTypesenseOptions(),
+            inject    : [options.useExisting! || options.useClass!],
         };
     }
 }

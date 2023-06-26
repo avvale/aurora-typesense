@@ -2,8 +2,9 @@
   "name": "@aurorajs.dev/typesense",
   "version": "0.0.1",
   "description": "Aurora module to create typesense client on nestjs",
-  "author": "Jose Carlos Rodriguez Palacín <carlos.rodriguez.palacin@gmail.com>",
+  "author": "José Carlos Rodríguez Palacín <carlos.rodriguez.palacin@gmail.com>",
   "license": "MIT",
+  "readmeFilename": "README.md",
   "scripts": {
     "start:dev": "tsc -w",
     "build": "rimraf -rf dist && tsc -p tsconfig.json",
