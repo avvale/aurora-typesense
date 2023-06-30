@@ -9,13 +9,14 @@ type Constructor = new (...args: any[]) => { /**/ };
 @Injectable()
 export class TypesenseMetadataRegistry
 {
+    private readonly logger = new Logger(TypesenseMetadataRegistry.name);
     private schemas: Map<Constructor, CollectionCreateSchema> = new Map();
 
     addSchema(target: Constructor, schema: CollectionCreateSchema): void
     {
         if (this.schemas.has(target))
         {
-            Logger.warn(`Schema ${target} already exists`);
+            this.logger.warn(`Schema ${target} already exists`);
         }
 
         this.schemas.set(target, schema);
@@ -24,6 +25,18 @@ export class TypesenseMetadataRegistry
     getSchemaByTarget(target: Constructor): CollectionCreateSchema | undefined
     {
         return this.schemas.get(target);
+    }
+
+    getSchemaByName(name: string): CollectionCreateSchema | undefined
+    {
+        for (const [key, value] of this.schemas)
+        {
+            if (value.name === name)
+            {
+                return value;
+            }
+        }
+        return undefined;
     }
 
     getTargets(): IterableIterator<Constructor>

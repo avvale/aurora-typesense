@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-
-import { SCHEMA_METADATA } from '../decorators';
-import { FIELD_METADATA } from '../decorators';
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
+import { FIELD_METADATA, SCHEMA_METADATA } from '../decorators';
 
 /**
- * examina el target y confirma si tiene metadata de typesense
- * si la tiene, la retorna el objeto schema con sus campos anidados
+ * examines the target (schema constructor) and confirms if it has typesense
+ * metadata if it does, returns the schema object with its nested fields
  */
 @Injectable()
 export class TypesenseMetadataAccessor
 {
-    constructor(private readonly reflector: Reflector) { }
+    constructor(
+        private readonly reflector: Reflector,
+    ) { }
 
     getTypesenseMetadata(target): CollectionCreateSchema | undefined
     {
