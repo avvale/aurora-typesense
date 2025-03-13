@@ -34,7 +34,7 @@ export class TypesenseMetadataAccessor
             return {
                 name                 : schema.name,
                 // eslint-disable-next-line camelcase
-                default_sorting_field: schema.defaultSortingField,
+                // default_sorting_field: schema.defaultSortingField,
                 fields               : [...(schema.auto ? [{ name: '.*', type: 'auto' }] : []), ...(fields || [])],
             };
         }
